@@ -1,0 +1,1 @@
+create table users( user_id int primary key auto_increment, name varchar(150), email_id varchar(100), mobile int, age int, d_o_b date, location text );
