@@ -256,7 +256,7 @@
           url :"/create_contact/",//the endpoint
           type: "POST",
           data : {
-                name    : $('input[name=first_name]').val().concat($('input[name=last_name]').val())
+                name    : $('input[name=first_name]').val()+' '+($('input[name=last_name]').val())
                 ,user_email    : $('input[name=email]').val(),
                 phone  : $('input[name=phone]').val(),
                 age  : $('input[name=age]').val()
