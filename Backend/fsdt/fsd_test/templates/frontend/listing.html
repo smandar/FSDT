@@ -23,22 +23,26 @@
 
             <thead>
                     <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
                     <th>Age</th>
                     <th>Date of Birth</th>
                     <th>Location</th>
+                    <th>Last Update</th>
                     <th>Action</th>
                     </tr>
             </thead>
             <tbody>
         {% for contact in contacts %}
                 <tr>
+                <td>{{contact.id}}</td>
                 <td>{{contact.name}}</td>
                 <td>{{contact.email_id}}</td>
                 <td>{{contact.age}}</td>
                 <td>{{contact.dob}}</td>
                 <td>{{contact.location|linebreaks}}</td>
+                <td>{{contact.last_dml_time}}</td>
                 <td>Edit</td>
                 </tr>
         {% endfor %}
@@ -46,9 +50,16 @@
             </tbody>
         </table>
     </div> <!-- user-listing -->
+
+
+      <div class="button-group " >
+            <label class="col-md-1 control-label"></label>
+            <div class="col-md-2">
+                    <button id = "cancel_btn" type="submit" onclick="location.href='http://127.0.0.1:8000/modify';" class="btn btn-info" >Add Users  <span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+
 </div> <!-- container -->
-<div class="well "></div>
-<!-- bootstrap -->
+</div><!-- bootstrap -->
        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
@@ -62,8 +73,28 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-    $('#contacts_table').DataTable();
+
+// hiding the id and last_dml_time columns
+
+    $('#contacts_table tr > *:nth-child(1)').hide();
+    $('#contacts_table tr > *:nth-child(7)').hide();
+
+// hiding the show x entries, search entries  and other columns in datatable
+
+    $('#contacts_table').dataTable({
+                "pageLength" : 5
+                ,"bPagniation" : false
+                ,"bLengthChange": false
+                ,"bFilter": false
+                ,"bInfo": false
+                ,"order" : [[6,"desc"]]
+
+    });
+
+
 } );
+
+
 
 </script>
 

@@ -21,4 +21,4 @@ class Contacts(models.Model):
 class addContactsForm(ModelForm):
     class Meta:
         model= Contacts
-        fields =['name', 'email_id', 'mobile', 'age']
+        fields =['name', 'email_id', 'mobile', 'age','dob','location']

@@ -24,7 +24,7 @@
 
     <div class="container">
 
-      <form class="well form-horizontal" action="/create_contact/" method="POST"  id="post-form">
+      <form class="well form-horizontal" action="/create_contact/" method="post"  id="post-form">
                 <fieldset>
 
              <!-- Form Name -->
@@ -89,12 +89,11 @@
 
 
       <!-- DoB input-->
-      <!-- dob missout bug -->
       <div class="form-group">
              <label class="col-md-4 control-label">DoB</label>
             <div class="col-md-4 inputGroupContainer">
                   <div class="input-group">
-                        <input name="DoB" placeholder = "Click to add date"  required = "True" class="form-control" data-provide="datepicker" >
+                        <input name="DoB" placeholder = "Click to add date"  required = "true" type="text" class="form-control" data-provide="datepicker" >
                 <!-- <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span> -->
                   </div>
             </div>
@@ -102,12 +101,11 @@
 
 
       <!-- Location input-->
-      <!-- location missout bug -->
       <div class="form-group">
             <label class="col-md-4 control-label">Location</label>
             <div class="col-md-4 inputGroupContainer">
                   <div class="input-group">
-                        <input name="location" placeholder = "Type in your location"  class="form-control" type="text"  required = "True" id="location">
+                        <input name="location" placeholder = "Type in your location"  class="form-control" type="text"  required = "true" id="location">
                         <!-- <span class="input-group-addon add-on"><span class="glyphicon glyphicon-map-marker"></span></span> -->
                   </div>
             </div>
@@ -122,10 +120,10 @@
       <div class="button-group " >
             <label class="col-md-4 control-label"></label>
             <div class="col-md-2">
-                    <button id = "cancel_btn" type="submit" class="btn btn-danger" >Cancel <span class="glyphicon glyphicon-remove"></span></button>
+                    <button id = "cancel_btn" type="submit" onclick="location.href='http://127.0.0.1:8000/';" class="btn btn-danger" >Cancel <span class="glyphicon glyphicon-remove"></span></button>
             </div>
             <div class="col-md-2">
-                    <button id = "submit_btn" type="submit" class="btn btn-success" >Submit <span class="glyphicon glyphicon-ok"></span></button>
+                    <button id = "submit_btn" type="submit" class="btn btn-success">Submit <span class="glyphicon glyphicon-ok"></span></button>
             </div>
       </div>
 
@@ -223,13 +221,26 @@
         if(proceed) {//everything looks good! proceed...
             // alert("success!");
             console.log ("success!");
+
+            // extract date from input
+
+             var mydate = ($("#post-form input[name=DoB]").datepicker({ dateFormat: 'dd/mm/yy' }).val());
+            console.log(mydate);
+
+            //extract location from object
+
+
+            var myloc = $('input[name=location]').val();
+            console.log(myloc);
+
+            // creating form_data
             var form_data = {
                 'name'     : $('input[name=first_name]').val().concat($('input[name=last_name]').val()),
                 'user_email'    : $('input[name=email]').val(),
                 'phone'  : $('input[name=phone]').val(),
                 'age'  : $('input[name=age]').val()
-                // ,'DoB'       : $('select[name=DoB]').val(),
-                // 'location'       : loc
+                ,'DoB'       : mydate
+                ,'location'       : myloc
               };
 
               console.log(form_data);
@@ -242,19 +253,19 @@
         console.log($('input[name=first_name]').val().concat($('input[name=last_name]').val()));
 
         $.ajax({
-          url :"create_contact/",//the endpoint
+          url :"/create_contact/",//the endpoint
           type: "POST",
           data : {
                 name    : $('input[name=first_name]').val().concat($('input[name=last_name]').val())
                 ,user_email    : $('input[name=email]').val(),
                 phone  : $('input[name=phone]').val(),
                 age  : $('input[name=age]').val()
-                ,DoB       : $('select[name=DoB]').val(),
-                location       : 'undefined'
+                ,DoB       : mydate
+                ,location       : myloc
               },
           success : function(json){
-            $('input[name=first_name]').val(' ')
-            console.log(json);
+            $("#post-form input[required=true]").val('');
+
             console.log('success logging');
               }
             ,error :function(xhr,errmsg,err) {
@@ -262,8 +273,8 @@
                 " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
         }
-        });
-    };
+        }); //ajax end
+    }; //func create_contact
 
 
     //         //Ajax post data to server

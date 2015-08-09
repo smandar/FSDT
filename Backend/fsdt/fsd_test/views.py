@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from .models import Contacts
 from .models import addContactsForm
 # from fsd_test.forms import addContactsForm
@@ -10,7 +11,7 @@ import json
 
 
 def listing(request):
-    contacts = Contacts.objects.order_by('-dob')
+    contacts = Contacts.objects.all()
     return render(request, 'frontend/listing.html', {'contacts': contacts})
 
 # can add the update/ add parameter here!
@@ -44,3 +45,6 @@ def create_contact(request):
             json.dumps({"nothing to see": "this isn't happening"}),
             content_type="application/json"
         )
+
+    return HttpResponseRedirect(view.listing)
+
