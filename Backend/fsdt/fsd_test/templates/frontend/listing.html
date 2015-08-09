@@ -2,25 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>User Listing Page</title>
+<title>Contacts List</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-<style type="text/css">
-    .user-listing{
-        margin: 20px;
-    }
-</style>
+
+<!-- datatables css -->
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+
 </head>
 <body>
-
-<body>
-<div class="jumbotron"><h1>User Listing</h1></div>
+    <div class="jumbotron"><h1> Contacts List </h1>
+      <p>Users in the system</p>
+    </div>
 
 <div class="container">
     <div class="user-listing">
-        <table class="table table-striped">
+        <!-- <table class="table table-striped"> -->
+        <table id="contacts_table" class="display" cellspacing="0" width="100%">
+
             <thead>
                     <tr>
                     <th>Name</th>
@@ -47,5 +47,25 @@
         </table>
     </div> <!-- user-listing -->
 </div> <!-- container -->
+<div class="well "></div>
+<!-- bootstrap -->
+       <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+      <!-- datatables -->
+<script src ="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+
+
+
+<!-- datatables script -->
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+    $('#contacts_table').DataTable();
+} );
+
+</script>
+
 </body>
 </html>

@@ -24,7 +24,7 @@
 
     <div class="container">
 
-      <form class="well form-horizontal" action=" " method="post"  id="contact_form">
+      <form class="well form-horizontal" action="/create_contact/" method="POST"  id="post-form">
                 <fieldset>
 
              <!-- Form Name -->
@@ -58,7 +58,7 @@
             <label class="col-md-4 control-label">E-Mail</label>
             <div class="col-md-4 inputGroupContainer">
                   <div class="input-group">
-                        <input name="email" placeholder="E-Mail Address" class="form-control"  type="email" required="true">
+                        <input name="email" placeholder="E-Mail Address" class="form-control"  type="text" required="true">
                   </div>
             </div>
       </div>
@@ -129,6 +129,12 @@
             </div>
       </div>
 
+<div id="results" >
+        <div class="col-md-6">
+    <div><p>Result</p></div>
+    </div>
+    </div> <!-- errors go here -->
+
 
 <!-- jquery -->
        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -164,7 +170,7 @@
 
     $(document).ready(function() {
 
-        $("#contact_form input[name=DoB]").datepicker(
+        $("#post-form input[name=DoB]").datepicker(
                                                         { dateFormat: 'dd/mm/yy' }
                                                         );
 
@@ -173,7 +179,7 @@
         var proceed = true;
 
         //loop through each field and change color to red for invalid fields
-        $("#contact_form input[required=true], #contact_form textarea[required=true]").each(function(){
+        $("#post-form input[required=true], #post-form textarea[required=true]").each(function(){
             $(this).css('border-color','');
             console.log(this);
             if(!$.trim($(this).val())){ //if this field is empty
@@ -217,21 +223,47 @@
         if(proceed) {//everything looks good! proceed...
             // alert("success!");
             console.log ("success!");
-            var post_data = {
+            var form_data = {
                 'name'     : $('input[name=first_name]').val().concat($('input[name=last_name]').val()),
                 'user_email'    : $('input[name=email]').val(),
                 'phone'  : $('input[name=phone]').val(),
                 'age'  : $('input[name=age]').val()
-
                 // ,'DoB'       : $('select[name=DoB]').val(),
                 // 'location'       : loc
               };
 
-              console.log(post_data);
+              console.log(form_data);
+              create_contact();
         }
-    // else{
-    //     alert('Data incorrect. Please re-enter.');
-    //     }
+
+        // AJAX for posting
+    function create_contact() {
+        console.log("create contacts is working!") // sanity check
+        console.log($('input[name=first_name]').val().concat($('input[name=last_name]').val()));
+
+        $.ajax({
+          url :"create_contact/",//the endpoint
+          type: "POST",
+          data : {
+                name    : $('input[name=first_name]').val().concat($('input[name=last_name]').val())
+                ,user_email    : $('input[name=email]').val(),
+                phone  : $('input[name=phone]').val(),
+                age  : $('input[name=age]').val()
+                ,DoB       : $('select[name=DoB]').val(),
+                location       : 'undefined'
+              },
+          success : function(json){
+            $('input[name=first_name]').val(' ')
+            console.log(json);
+            console.log('success logging');
+              }
+            ,error :function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+        });
+    };
 
 
     //         //Ajax post data to server
