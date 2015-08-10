@@ -37,7 +37,7 @@
         {% for contact in contacts %}
                 <tr>
                 <td>{{contact.id}}</td>
-                <td>{{contact.name}}</td>
+                <td>{{contact.first_name}} {{contact.last_name}}</td>
                 <td>{{contact.email_id}}</td>
                 <td>{{contact.age}}</td>
                 <td>{{contact.dob}}</td>
@@ -74,7 +74,8 @@
 
     $(document).ready(function() {
 
-// hiding the id and last_dml_time columns
+// hiding the id and last_dml_time columns need to hide columns before staging data
+//for datatables
 
     $('#contacts_table tr > *:nth-child(1)').hide();
     $('#contacts_table tr > *:nth-child(7)').hide();

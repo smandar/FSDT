@@ -256,17 +256,18 @@
           url :"/create_contact/",//the endpoint
           type: "POST",
           data : {
-                name    : $('input[name=first_name]').val()+' '+($('input[name=last_name]').val())
-                ,user_email    : $('input[name=email]').val(),
-                phone  : $('input[name=phone]').val(),
-                age  : $('input[name=age]').val()
+                first_name: $('input[name=first_name]').val()
+                ,last_name: $('input[name=last_name]').val()
+                ,user_email    : $('input[name=email]').val()
+                ,phone  : $('input[name=phone]').val()
+                ,age  : $('input[name=age]').val()
                 ,DoB       : mydate
                 ,location       : myloc
               },
           success : function(json){
             $("#post-form input[required=true]").val('');
-
             console.log('success logging');
+            window.location.replace("http://127.0.0.1:8000");
               }
             ,error :function(xhr,errmsg,err) {
             $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
