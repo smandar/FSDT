@@ -43,8 +43,14 @@
                 <td>{{contact.dob}}</td>
                 <td>{{contact.location|linebreaks}}</td>
                 <td>{{contact.last_dml_time}}</td>
-                <td><button type="button" class="btn btn-default btn-sm" id="{{ contact.id }}" data-contactid="{{ contact.id }}">Edit</button>
-</td>
+                <td>
+                <form action="/update_contact/" method="POST">
+                    <button>
+                    <input name="user_pk" type="text" value="{{contact.id}}" style="display:none"/> <!--keep this hidden and it works as a normal form -->
+                    <input type="button" class="btn-default btn-link" value = "Edit" id="{{contact.id}}" data-contactid="{{contact.id}}"/>
+                    </button>
+                    </form>
+                </td>
                 </tr>
         {% endfor %}
 
@@ -56,7 +62,7 @@
       <div class="button-group " >
             <label class="col-md-1 control-label"></label>
             <div class="col-md-2">
-                    <button id = "cancel_btn" type="submit" onclick="location.href='http://127.0.0.1:8000/modify/';" class="btn btn-info" >Add Users  <span class="glyphicon glyphicon-plus"></span></button>
+                    <button id = "add_users" type="submit" onclick="location.href='http://127.0.0.1:8000/modify/';" class="btn btn-info" >Add Users  <span class="glyphicon glyphicon-plus"></span></button>
             </div>
 
 </div> <!-- container -->
@@ -65,10 +71,10 @@
 
 <!-- update page hack  -->
 
-<form style="display: hidden" action="http://127.0.0.1:8000/modify/" method="POST" id="form">
+<!-- <form style="display: hidden" action="http://127.0.0.1:8000/modify/" method="POST" id="form">
   <input type="hidden" id="var1" name="var1" value=""/>
 </form>
-<!--  -->
+ --><!--  -->
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -87,22 +93,31 @@
 // hiding the id and last_dml_time columns need to hide columns before staging data
 //for datatables
 
-    $('#contacts_table tr > *:nth-child(1)').hide();
+    // $('#contacts_table tr > *:nth-child(1)').hide();
     // $('#contacts_table tr > *:nth-child(7)').hide();
 
 
 //create edit button redirects before staging data for datatables
+    $('.btn-default.btn-link').click(function(){
+        var contact_id;
+        contact_id = $(this).attr("data-contactid");
+        console.log(contact_id);
+        // $("#var1").val(contact_id);
+        // val_1 = $("#var1").val();
 
-    $('.btn-default.btn-sm').click(function(){
-    var contact_id;
-    contact_id = $(this).attr("data-contactid");
-    console.log(contact_id);
-    $("#var1").val(contact_id);
-    val_1 = $("#var1").val();
-        alert("Please enter the value "+val_1+" in the field");
-    $("#form").submit();
-})
-
+        $.ajax({
+            url:"/update_contact/",//the endpoint
+            type: "POST",
+            data:{user_id: contact_id},
+            success:function(json){
+                console.log('~ ajax Sent user_id to server ~')
+            }//success
+            ,error :function(xhr,errmsg,err) {
+              alert("Oops! We have encountered an error in finding the contact . Please try again!");
+              window.location.replace("http://127.0.0.1:8000/");
+                   }
+        });//ajax
+});//sending user_pk TO SERVER
 
 
 // hiding the show x entries, search entries  and other columns in datatable

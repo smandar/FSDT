@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
  <html>
      <head>
          <meta charset="utf-8">
@@ -24,7 +24,7 @@
 
     <div class="container">
 
-      <form class="well form-horizontal" action="/create_contact/" method="post"  id="post-form">
+      <form class="well form-horizontal" action="/create_contact/" method="POST"  id="post-form">
                 <fieldset>
 
              <!-- Form Name -->
@@ -37,7 +37,7 @@
                   <label class="col-md-4 control-label">ID</label>
                   <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
-                              <input  name="id" placeholder="ONLY FOR UPDATE" class="form-control" >
+                              <input  name="user_id" placeholder="ONLY FOR UPDATE" class="form-control" value="{{mod.id}}">
                         </div>
                   </div>
             </div>
@@ -164,7 +164,6 @@
 <!-- Start jQuery code -->
     <script type="text/javascript">
 
-
 // autocompleting location using google maps api
 //output undefined
                         google.maps.event.addDomListener(window, 'load', function () {
@@ -175,19 +174,28 @@
                               return address;
             });
         });
+  //changing the button
+
+//change the value to "ADD" if no user_id is passed or "UPDATE"if user_id is passed
+
+    if (!$("#contact_pk")){
+      console.log('apples');
+      $("#submit_btn").html('Add <span class="glyphicon glyphicon-plus"></span>');
+    }
+    else{
+      $("#submit_btn").html('Update <span class="glyphicon glyphicon-pencil"></span>');
+    }
+
+//hiding the ID column from the user
+    // $("#contact_pk").hide()
 
       // console.log(loc);
+    $(document).ready(function(){
 
-    $(document).ready(function() {
+        $("#post-form input[name=DoB]").datepicker({dateFormat:'dd/mm/yy'});
 
+        $("#submit_btn").click(function(){
 
-
-        $("#post-form input[name=DoB]").datepicker(
-                                                        { dateFormat: 'dd/mm/yy' }
-                                                        );
-
-
-        $("#submit_btn").click(function() {
         var proceed = true;
 
         //loop through each field and change color to red for invalid fields
@@ -208,7 +216,6 @@
                 alert('Email ID vaidation failed');
                 proceed = false; //set do not proceed flag
             }
-
                         //check for numeric values
              if(
                 ($(this).attr("name")=="age" || $(this).attr("name")=="phone")
@@ -218,7 +225,6 @@
                 alert('Non-numeric value in numeric fields');
                 proceed = false; //set do not proceed flag
             }
-
                         //check for 10 digits in mobile number
              if(
                 ($(this).attr("name")=="phone")
@@ -228,72 +234,37 @@
                 alert('Mobile number vaidation failed');
                 proceed = false; //set do not proceed flag
             }
-        });
+          });//finishing validations
 
         console.log(proceed);
 
-        if(proceed) {//everything looks good! proceed...
-            // alert("success!");
+        if(proceed) {
             console.log ("success!");
 
             // extract date from input
-
              var mydate = ($("#post-form input[name=DoB]").datepicker({ dateFormat: 'dd/mm/yy' }).val());
             console.log(mydate);
 
-            //extract location from object
-
-
+            //extract location from input
             var myloc = $('input[name=location]').val();
             console.log(myloc);
 
-            if(!$.trim($('input[name=id]').val()))
-                  create_contact();
-            else
-               update_contact();
+            //same function for create and update. Verfiy on client end if the field ID has data.
+            //Verify on server end if the ID is present in POST data, then update
+            create_contact();
+
         }
 
-        // AJAX for posting 'create contact'
-
+        // AJAX for posting 'create_contact'
     function create_contact() {
-        console.log("create contacts is working!") // sanity check
+        console.log("modifying contacts is working!") // sanity check
         console.log($('input[name=first_name]').val().concat($('input[name=last_name]').val()));
 
         $.ajax({
           url :"/create_contact/",//the endpoint
           type: "POST",
           data : {
-                first_name: $('input[name=first_name]').val()
-                ,last_name: $('input[name=last_name]').val()
-                ,user_email    : $('input[name=email]').val()
-                ,phone  : $('input[name=phone]').val()
-                ,age  : $('input[name=age]').val()
-                ,DoB       : mydate
-                ,location       : myloc
-              },
-          success : function(json){
-            $("#post-form input[required=true]").val('');
-            console.log('~ ajax contact creation succesful ~');
-            window.location.replace("http://127.0.0.1:8000");
-              }
-            ,error :function(xhr,errmsg,err) {
-            $('#results').html("Oops! We have encountered an error in creating the contact . PLease verify values and try again"); // add the error to the dom
-            $("#post-form input[required=true]").val('');        }
-        }); //ajax end
-    }; //func create_contact
-
-
-        // AJAX for posting 'update contact'
-
-    function update_contact() {
-        console.log("update contacts is working!") // sanity check
-        console.log($('input[name=first_name]').val().concat($('input[name=last_name]').val()));
-
-        $.ajax({
-          url :"/update_contact/",//the endpoint
-          type: "POST",
-          data : {
-                  id : $('input[name=id]').val()
+                user_id: $('input[name=user_id]').val()
                 ,first_name: $('input[name=first_name]').val()
                 ,last_name: $('input[name=last_name]').val()
                 ,user_email    : $('input[name=email]').val()
@@ -304,40 +275,51 @@
               },
           success : function(json){
             $("#post-form input[required=true]").val('');
-            console.log('~ ajax update succesful ! ~');
-           window.location.replace("http://127.0.0.1:8000");
-              }
+            console.log('~ ajax Contacts model modification succesful ~');
+            window.location.replace("http://127.0.0.1:8000");
+              }//success
             ,error :function(xhr,errmsg,err) {
-             $('#results').html("Oops! We have encountered an error in updating the contact . Please verify contact id and try again"); // add the error to the dom
-              alert("Oops! We have encountered an error in updating the contact . Please verify contact id and try again");
-              window.location.replace("http://127.0.0.1:8000/modify");
-                   }
+           alert("Oops! We have encountered an error in editting the database. PLease verify values and try again"); // add the error to the dom
+            // $("#post-form input[required=true]").val('');
+              }//error
         }); //ajax end
-    }; //func update_contact
+    }; //func create_contact
 
-    //         //Ajax post data to server
-    //         $.post('contact_me.php', post_data, function(response){
-    //             if(response.type == 'error'){ //load json data from server and output message
-    //                 output = '<div class="error">'+response.text+'</div>';
-    //             }else{
-    //                 output = '<div class="success">'+response.text+'</div>';
-    //                 //reset values in all input fields
-    //                 $("#contact_form  input[required=true], #contact_form textarea[required=true]").val('');
-    //                 $("#contact_form #contact_body").slideUp(); //hide form after success
-    //             }
-    //             $("#contact_form #contact_results").hide().html(output).slideDown();
-    //         }, 'json');
-    //     }
-    // });
+        // AJAX for posting 'update contact'
+    // function update_contact() {
+    //     console.log("update contacts is working!") // sanity check
+    //     console.log($('input[name=first_name]').val().concat($('input[name=last_name]').val()));
+    //     $.ajax({
+    //       url :"/update_contact/",//the endpoint
+    //       type: "POST",
+    //       data : {
+    //               id : $('input[name=id]').val()
+    //             ,first_name: $('input[name=first_name]').val()
+    //             ,last_name: $('input[name=last_name]').val()
+    //             ,user_email    : $('input[name=email]').val()
+    //             ,phone  : $('input[name=phone]').val()
+    //             ,age  : $('input[name=age]').val()
+    //             ,DoB       : mydate
+    //             ,location       : myloc
+    //           },
+    //       success : function(json){
+    //         $("#post-form input[required=true]").val('');
+    //         console.log('~ ajax update succesful ! ~');
+    //        window.location.replace("http://127.0.0.1:8000");
+    //           }
+    //         ,error :function(xhr,errmsg,err) {
+    //          $('#results').html("Oops! We have encountered an error in updating the contact . Please verify contact id and try again"); // add the error to the dom
+    //           alert("Oops! We have encountered an error in updating the contact . Please verify contact id and try again");
+    //           window.location.replace("http://127.0.0.1:8000/modify");
+    //                }
+    //     }); //ajax end
+    // }; //func update_contact
+    //
 
-    // //reset previously set border colors and hide all message on .keyup()
-    // $("#contact_form  input[required=true], #contact_form textarea[required=true]").keyup(function() {
-    //     $(this).css('border-color','');
-    //     $("#result").slideUp();
-    // });
 
-});
-});
+
+  });//submit button
+});//document
     </script>
 </body>
 
