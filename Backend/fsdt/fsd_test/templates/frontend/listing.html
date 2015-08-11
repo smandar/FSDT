@@ -43,7 +43,8 @@
                 <td>{{contact.dob}}</td>
                 <td>{{contact.location|linebreaks}}</td>
                 <td>{{contact.last_dml_time}}</td>
-                <td>Edit</td>
+                <td><button type="button" class="btn btn-default btn-sm" id="{{ contact.id }}" data-contactid="{{ contact.id }}">Edit</button>
+</td>
                 </tr>
         {% endfor %}
 
@@ -55,13 +56,22 @@
       <div class="button-group " >
             <label class="col-md-1 control-label"></label>
             <div class="col-md-2">
-                    <button id = "cancel_btn" type="submit" onclick="location.href='http://127.0.0.1:8000/modify';" class="btn btn-info" >Add Users  <span class="glyphicon glyphicon-plus"></span></button>
+                    <button id = "cancel_btn" type="submit" onclick="location.href='http://127.0.0.1:8000/modify/';" class="btn btn-info" >Add Users  <span class="glyphicon glyphicon-plus"></span></button>
             </div>
 
 </div> <!-- container -->
 </div><!-- bootstrap -->
-       <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+
+<!-- update page hack  -->
+
+<form style="display: hidden" action="http://127.0.0.1:8000/modify/" method="POST" id="form">
+  <input type="hidden" id="var1" name="var1" value=""/>
+</form>
+<!--  -->
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
       <!-- datatables -->
 <script src ="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
@@ -78,7 +88,22 @@
 //for datatables
 
     $('#contacts_table tr > *:nth-child(1)').hide();
-    $('#contacts_table tr > *:nth-child(7)').hide();
+    // $('#contacts_table tr > *:nth-child(7)').hide();
+
+
+//create edit button redirects before staging data for datatables
+
+    $('.btn-default.btn-sm').click(function(){
+    var contact_id;
+    contact_id = $(this).attr("data-contactid");
+    console.log(contact_id);
+    $("#var1").val(contact_id);
+    val_1 = $("#var1").val();
+        alert("Please enter the value "+val_1+" in the field");
+    $("#form").submit();
+})
+
+
 
 // hiding the show x entries, search entries  and other columns in datatable
 
@@ -93,7 +118,8 @@
     });
 
 
-} );
+
+});//close document
 
 
 

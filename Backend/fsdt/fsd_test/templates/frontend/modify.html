@@ -30,6 +30,18 @@
              <!-- Form Name -->
              <legend>Contact Details</legend>
 
+            <!-- id input keep it hidden -->
+
+            <!-- <div class="form-group" style="display:none" > -->
+           <div class="form-group" id = "contact_pk">
+                  <label class="col-md-4 control-label">ID</label>
+                  <div class="col-md-4 inputGroupContainer">
+                        <div class="input-group">
+                              <input  name="id" placeholder="ONLY FOR UPDATE" class="form-control" >
+                        </div>
+                  </div>
+            </div>
+
             <!-- First Name input-->
 
             <div class="form-group">
@@ -127,7 +139,7 @@
             </div>
       </div>
 
-<div id="results" >
+<div class="container" id="results" >
         <div class="col-md-6">
     <div><p>Result</p></div>
     </div>
@@ -167,6 +179,8 @@
       // console.log(loc);
 
     $(document).ready(function() {
+
+
 
         $("#post-form input[name=DoB]").datepicker(
                                                         { dateFormat: 'dd/mm/yy' }
@@ -233,21 +247,14 @@
             var myloc = $('input[name=location]').val();
             console.log(myloc);
 
-            // creating form_data
-            var form_data = {
-                'name'     : $('input[name=first_name]').val().concat($('input[name=last_name]').val()),
-                'user_email'    : $('input[name=email]').val(),
-                'phone'  : $('input[name=phone]').val(),
-                'age'  : $('input[name=age]').val()
-                ,'DoB'       : mydate
-                ,'location'       : myloc
-              };
-
-              console.log(form_data);
-              create_contact();
+            if(!$.trim($('input[name=id]').val()))
+                  create_contact();
+            else
+               update_contact();
         }
 
-        // AJAX for posting
+        // AJAX for posting 'create contact'
+
     function create_contact() {
         console.log("create contacts is working!") // sanity check
         console.log($('input[name=first_name]').val().concat($('input[name=last_name]').val()));
@@ -266,17 +273,47 @@
               },
           success : function(json){
             $("#post-form input[required=true]").val('');
-            console.log('success logging');
+            console.log('~ ajax contact creation succesful ~');
             window.location.replace("http://127.0.0.1:8000");
               }
             ,error :function(xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
+            $('#results').html("Oops! We have encountered an error in creating the contact . PLease verify values and try again"); // add the error to the dom
+            $("#post-form input[required=true]").val('');        }
         }); //ajax end
     }; //func create_contact
 
+
+        // AJAX for posting 'update contact'
+
+    function update_contact() {
+        console.log("update contacts is working!") // sanity check
+        console.log($('input[name=first_name]').val().concat($('input[name=last_name]').val()));
+
+        $.ajax({
+          url :"/update_contact/",//the endpoint
+          type: "POST",
+          data : {
+                  id : $('input[name=id]').val()
+                ,first_name: $('input[name=first_name]').val()
+                ,last_name: $('input[name=last_name]').val()
+                ,user_email    : $('input[name=email]').val()
+                ,phone  : $('input[name=phone]').val()
+                ,age  : $('input[name=age]').val()
+                ,DoB       : mydate
+                ,location       : myloc
+              },
+          success : function(json){
+            $("#post-form input[required=true]").val('');
+            console.log('~ ajax update succesful ! ~');
+           window.location.replace("http://127.0.0.1:8000");
+              }
+            ,error :function(xhr,errmsg,err) {
+             $('#results').html("Oops! We have encountered an error in updating the contact . Please verify contact id and try again"); // add the error to the dom
+              alert("Oops! We have encountered an error in updating the contact . Please verify contact id and try again");
+              window.location.replace("http://127.0.0.1:8000/modify");
+                   }
+        }); //ajax end
+    }; //func update_contact
 
     //         //Ajax post data to server
     //         $.post('contact_me.php', post_data, function(response){
