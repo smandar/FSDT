@@ -14,7 +14,6 @@ class Contacts(models.Model):
     location = models.TextField(default='Not available')
     last_dml_time = models.DateTimeField(default=timezone.now)
 
-
     def __str__(self):
         return self.first_name
 

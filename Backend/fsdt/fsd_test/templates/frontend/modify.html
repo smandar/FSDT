@@ -33,11 +33,11 @@
             <!-- id input keep it hidden -->
 
             <!-- <div class="form-group" style="display:none" > -->
-           <div class="form-group" id = "contact_pk">
+           <div class="form-group" id = "pk_field">
                   <label class="col-md-4 control-label">ID</label>
                   <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
-                              <input  name="user_id" placeholder="ONLY FOR UPDATE" class="form-control" value="{{mod.id}}">
+                              <input  id = "contact_pk" name="user_id" placeholder="ONLY FOR UPDATE" class="form-control" value="{{edit_user.id}}">
                         </div>
                   </div>
             </div>
@@ -48,7 +48,8 @@
                   <label class="col-md-4 control-label">First Name</label>
                   <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
-                              <input  name="first_name" placeholder="First Name" class="form-control"  type="text" required="true">
+                              <input  name="first_name" placeholder="First Name" class="form-control"  type="text" required="true"
+                              value="{{edit_user.first_name}}">
                         </div>
                   </div>
             </div>
@@ -59,7 +60,8 @@
                   <label class="col-md-4 control-label" >Last Name</label>
                   <div class="col-md-4 inputGroupContainer">
                         <div class="input-group">
-                              <input name="last_name" placeholder="Last Name" class="form-control"  type="text" required="true">
+                              <input name="last_name" placeholder="Last Name" class="form-control"  type="text" required="true"
+                              value="{{edit_user.last_name}}">
                         </div>
                   </div>
             </div>
@@ -70,7 +72,8 @@
             <label class="col-md-4 control-label">E-Mail</label>
             <div class="col-md-4 inputGroupContainer">
                   <div class="input-group">
-                        <input name="email" placeholder="E-Mail Address" class="form-control"  type="text" required="true">
+                        <input name="email" placeholder="E-Mail Address" class="form-control"  type="text" required="true"
+                        value="{{edit_user.email_id}}">
                   </div>
             </div>
       </div>
@@ -82,7 +85,7 @@
             <label class="col-md-4 control-label">Mobile Number</label>
             <div class="col-md-4 inputGroupContainer">
                   <div class="input-group">
-                        <input name="phone" placeholder="10-digit mobile number" maxlength = "10" class="form-control" type="text" required="true">
+                        <input name="phone" placeholder="10-digit mobile number" maxlength = "10" class="form-control" type="text" required="true" value="{{edit_user.mobile}}">
                   </div>
             </div>
       </div>
@@ -94,7 +97,7 @@
             <label class="col-md-4 control-label">Age</label>
             <div class="col-md-4 inputGroupContainer">
                   <div class="input-group">
-                        <input name="age" placeholder="Age" class="form-control" type="text" required="true">
+                        <input name="age" placeholder="Age" class="form-control" type="text" required="true" value="{{edit_user.age}}">
                   </div>
             </div>
       </div>
@@ -105,7 +108,7 @@
              <label class="col-md-4 control-label">DoB</label>
             <div class="col-md-4 inputGroupContainer">
                   <div class="input-group">
-                        <input name="DoB" placeholder = "Click to add date"  required = "true" type="text" class="form-control" data-provide="datepicker" >
+                        <input name="DoB" placeholder = "Click to add date"  required = "true" type="text" class="form-control" data-provide="datepicker">
                 <!-- <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span> -->
                   </div>
             </div>
@@ -117,7 +120,7 @@
             <label class="col-md-4 control-label">Location</label>
             <div class="col-md-4 inputGroupContainer">
                   <div class="input-group">
-                        <input name="location" placeholder = "Type in your location"  class="form-control" type="text"  required = "true" id="location">
+                        <input name="location" placeholder = "Type in your location"  class="form-control" type="text"  required = "true" id="location" value="{{edit_user.location}}">
                         <!-- <span class="input-group-addon add-on"><span class="glyphicon glyphicon-map-marker"></span></span> -->
                   </div>
             </div>
@@ -176,21 +179,25 @@
         });
   //changing the button
 
-//change the value to "ADD" if no user_id is passed or "UPDATE"if user_id is passed
 
-    if (!$("#contact_pk")){
-      console.log('apples');
+//change the value to "ADD" if no user_id is passed or "UPDATE"if user_id is passed
+    if (!$("#contact_pk").val()){
+      console.log('add mode');
       $("#submit_btn").html('Add <span class="glyphicon glyphicon-plus"></span>');
     }
     else{
       $("#submit_btn").html('Update <span class="glyphicon glyphicon-pencil"></span>');
+      console.log('edit mode');
+
     }
 
 //hiding the ID column from the user
-    // $("#contact_pk").hide()
+    $("#pk_field").hide()
 
       // console.log(loc);
     $(document).ready(function(){
+
+
 
         $("#post-form input[name=DoB]").datepicker({dateFormat:'dd/mm/yy'});
 
@@ -201,14 +208,14 @@
         //loop through each field and change color to red for invalid fields
         $("#post-form input[required=true], #post-form textarea[required=true]").each(function(){
             $(this).css('border-color','');
-            console.log(this);
+            // console.log(this);
             if(!$.trim($(this).val())){ //if this field is empty
                 $(this).css('border-color','red'); //change border color to red
                 proceed = false; //set do not proceed flag
             }
             //check invalid email
             var email_reg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-            console.log($(this).val());
+            // console.log($(this).val());
             if($(this).attr("name")=="email"
                && !email_reg.test($.trim($(this).val())))
             {
@@ -243,11 +250,11 @@
 
             // extract date from input
              var mydate = ($("#post-form input[name=DoB]").datepicker({ dateFormat: 'dd/mm/yy' }).val());
-            console.log(mydate);
+            // console.log(mydate);
 
             //extract location from input
             var myloc = $('input[name=location]').val();
-            console.log(myloc);
+            // console.log(myloc);
 
             //same function for create and update. Verfiy on client end if the field ID has data.
             //Verify on server end if the ID is present in POST data, then update
@@ -279,44 +286,11 @@
             window.location.replace("http://127.0.0.1:8000");
               }//success
             ,error :function(xhr,errmsg,err) {
-           alert("Oops! We have encountered an error in editting the database. PLease verify values and try again"); // add the error to the dom
-            // $("#post-form input[required=true]").val('');
+           alert("Oops! We have encountered an error in editting the database. PLease verify values and try again"); // add the error to the page
+            $("#post-form input[required=true]").val('');
               }//error
         }); //ajax end
     }; //func create_contact
-
-        // AJAX for posting 'update contact'
-    // function update_contact() {
-    //     console.log("update contacts is working!") // sanity check
-    //     console.log($('input[name=first_name]').val().concat($('input[name=last_name]').val()));
-    //     $.ajax({
-    //       url :"/update_contact/",//the endpoint
-    //       type: "POST",
-    //       data : {
-    //               id : $('input[name=id]').val()
-    //             ,first_name: $('input[name=first_name]').val()
-    //             ,last_name: $('input[name=last_name]').val()
-    //             ,user_email    : $('input[name=email]').val()
-    //             ,phone  : $('input[name=phone]').val()
-    //             ,age  : $('input[name=age]').val()
-    //             ,DoB       : mydate
-    //             ,location       : myloc
-    //           },
-    //       success : function(json){
-    //         $("#post-form input[required=true]").val('');
-    //         console.log('~ ajax update succesful ! ~');
-    //        window.location.replace("http://127.0.0.1:8000");
-    //           }
-    //         ,error :function(xhr,errmsg,err) {
-    //          $('#results').html("Oops! We have encountered an error in updating the contact . Please verify contact id and try again"); // add the error to the dom
-    //           alert("Oops! We have encountered an error in updating the contact . Please verify contact id and try again");
-    //           window.location.replace("http://127.0.0.1:8000/modify");
-    //                }
-    //     }); //ajax end
-    // }; //func update_contact
-    //
-
-
 
   });//submit button
 });//document
